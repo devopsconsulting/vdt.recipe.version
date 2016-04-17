@@ -6,28 +6,40 @@ class CreateConfig:
         self.buildout = buildout
         self.buildout_dir = buildout['buildout']['directory']
         self.name = name
-        self.versions_file = options.get('versions-file')
-        self.sources_to_build = options.get('sources-to-build')
+        self.options = options
 
     def update(self):
         config = ConfigParser.ConfigParser()
 
         config.add_section('vdt.recipe.debian')
+
+        version_executable = self.options.get(
+            'version-executable') or "%s/bin/version" % self.buildout_dir
+        config.set(
+            'vdt.recipe.debian', 'version-executable', version_executable)
         config.set(
             'vdt.recipe.debian',
-            'versions-executable', "%s/bin/version" % self.buildout_dir)
+            'version-plugin', self.options.get('version-plugin'))
         config.set(
-            'vdt.recipe.debian', 'versions-file', self.versions_file)
+            'vdt.recipe.debian',
+            'version-extra-args', self.options.get('version-extra-args'))
+        config.set(
+            'vdt.recipe.debian',
+            'versions-file', self.options.get('versions-file'))
         config.set(
             'vdt.recipe.debian',
             'sources-directory', "%s/src" % self.buildout_dir)
         config.set(
             'vdt.recipe.debian',
-            'sources-to-build', "\n%s" % self.sources_to_build)
+            'sources-to-build', "\n%s" % self.options.get('sources-to-build'))
+        config.set(
+            'vdt.recipe.debian',
+            'target-directory', self.options.get('target-directory'))
 
         cfgfile = open("%s/.vdt.recipe.debian.cfg" % self.buildout_dir, 'w')
         config.write(cfgfile)
         cfgfile.close()
+        return ""
 
     def install(self):
-        self.update()
+        return self.update()
