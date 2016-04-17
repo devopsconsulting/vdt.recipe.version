@@ -1,13 +1,22 @@
 import ConfigParser
 import logging
 import os
+import platform
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+SUPPORTED_PLATFORMS = ["ubuntu", "debian"]
+
 
 class Debianize(object):
+
+    @staticmethod
+    def check_platform():
+        current_platform = platform.dist()[0].lower()
+        return current_platform in SUPPORTED_PLATFORMS
+
     @staticmethod
     def get_config():
         path = os.getcwd()
@@ -16,6 +25,14 @@ class Debianize(object):
         return config
 
     def __call__(self, *args, **kwargs):
+        logger.info("Check platform")
+        can_build = self.check_platform()
+        if not can_build:
+            logger.info(
+                "Cannot build .deb packages, your platform is not supported. "
+                "Supported platforms: %s" % ", ".join(SUPPORTED_PLATFORMS))
+            return False
+
         logger.info("Get configuration")
         config = self.get_config()
 
