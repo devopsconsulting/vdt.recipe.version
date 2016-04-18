@@ -32,7 +32,6 @@ setup(
     install_requires=[
         'setuptools',
         'zc.buildout',
-        'vdt.versionplugin.buildout>=0.0.2'
     ],
     # mark test target to require extras.
     extras_require={
