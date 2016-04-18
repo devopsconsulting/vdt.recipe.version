@@ -12,7 +12,7 @@ logger.setLevel(logging.INFO)
 SUPPORTED_PLATFORMS = ["ubuntu", "debian"]
 
 
-class Debianize(object):
+class Build(object):
 
     @staticmethod
     def check_platform():
@@ -28,7 +28,7 @@ class Debianize(object):
     def get_config():
         path = os.getcwd()
         config = ConfigParser.ConfigParser()
-        config.readfp(open('%s/.vdt.recipe.debian.cfg' % path))
+        config.readfp(open('%s/.vdt.recipe.version.cfg' % path))
         return config
 
     @staticmethod
@@ -48,17 +48,19 @@ class Debianize(object):
 
         config = self.get_config()
         version_executable = config.get(
-            'vdt.recipe.debian', 'version-executable')
-        version_plugin = config.get('vdt.recipe.debian', 'version-plugin')
+            'vdt.recipe.version', 'version-executable')
+        version_plugin = config.get('vdt.recipe.version', 'version-plugin')
         version_extra_args = config.get(
-            'vdt.recipe.debian', 'version-extra-args')
-        versions_file = config.get('vdt.recipe.debian', 'versions-file')
+            'vdt.recipe.version', 'version-extra-args')
+        versions_file = config.get('vdt.recipe.version', 'versions-file')
         sources_directory = config.get(
-            'vdt.recipe.debian', 'sources-directory')
+            'vdt.recipe.version', 'sources-directory')
         sources_to_build = config.get(
-            'vdt.recipe.debian', 'sources-to-build').split('\n')
+            'vdt.recipe.version', 'sources-to-build').split('\n')
+        target_extension = config.get(
+            'vdt.recipe.version', 'target-extension')
         target_directory = config.get(
-            'vdt.recipe.debian', 'target-directory')
+            'vdt.recipe.version', 'target-directory')
 
         # create target directory to place our .deb files
         self.create_target_directory(target_directory)
@@ -66,7 +68,7 @@ class Debianize(object):
         for src in self.get_build_sources(sources_directory, sources_to_build):
             cwd = "%s/%s" % (sources_directory, src)
 
-            logger.info("Building package for %s" % src)
+            logger.info("Running 'version' for %s" % src)
             build_cmd = [
                 version_executable,
                 "--plugin=%s" % version_plugin,
@@ -79,12 +81,13 @@ class Debianize(object):
             logger.info(
                 subprocess.check_output(build_cmd, cwd=cwd))
 
-            # move deb files to target directory
-            deb_files = glob("%s/*.deb" % cwd)
-            move_cmd = ["mv"] + deb_files + [target_directory]
+            # move created files to target directory
+            package_files = glob("%s/%s" % (cwd, target_extension))
+            if package_files:
+                move_cmd = ["mv"] + package_files + [target_directory]
 
-            logger.info("Executing command %s" % move_cmd)
-            logger.info(
-                subprocess.check_output(move_cmd, cwd=cwd))
+                logger.info("Executing command %s" % move_cmd)
+                logger.info(
+                    subprocess.check_output(move_cmd, cwd=cwd))
 
-debianize = Debianize()
+build = Build()

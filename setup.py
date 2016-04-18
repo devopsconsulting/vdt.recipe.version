@@ -3,10 +3,10 @@ from setuptools import setup, find_packages
 
 __version__ = "0.0.1"
 
-description = "A buildout recipe to create .deb packages"
+description = "A buildout recipe to use vdt.version"
 
 setup(
-    name='vdt.recipe.debian',
+    name='vdt.recipe.version',
     version=__version__,
     description=description,
     long_description=description,
@@ -19,7 +19,7 @@ setup(
     keywords='',
     author='Martijn Jacobs',
     author_email='martijn@devopsconsulting.nl',
-    url='https://github.com/devopsconsulting/vdt.recipe.debian',
+    url='https://github.com/devopsconsulting/vdt.recipe.version',
     license='',
     # include all packages in the egg, except the test package.
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
@@ -40,8 +40,8 @@ setup(
     },
     # generate scripts
     entry_points={
-        'console_scripts': ['debianize = vdt.recipe.debian.debianize:debianize'],  # noqs
-        'zc.buildout': ['default = vdt.recipe.debian.config:CreateConfig']
+        'console_scripts': ['vdt-build = vdt.recipe.version.build:build'],  # noqs
+        'zc.buildout': ['default = vdt.recipe.version.config:CreateConfig']
     },
 
 )
