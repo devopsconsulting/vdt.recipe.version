@@ -9,15 +9,15 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-SUPPORTED_PLATFORMS = ["ubuntu", "debian"]
-
 
 class Build(object):
 
     @staticmethod
-    def check_platform():
-        current_platform = platform.dist()[0].lower()
-        return current_platform in SUPPORTED_PLATFORMS
+    def check_platform(target_extension):
+        if target_extension == "*.deb":
+            current_platform = platform.dist()[0].lower()
+            return current_platform in ["ubuntu", "debian"]
+        return True
 
     @staticmethod
     def create_target_directory(directory):
@@ -38,14 +38,6 @@ class Build(object):
                 yield src
 
     def __call__(self, *args, **kwargs):
-        supported_plaform = self.check_platform()
-
-        if not supported_plaform:
-            logger.info(
-                "Cannot build .deb packages, your platform is not supported. "
-                "Supported platforms: %s" % ", ".join(SUPPORTED_PLATFORMS))
-            return False
-
         config = self.get_config()
         version_executable = config.get(
             'vdt.recipe.version', 'version-executable')
@@ -61,6 +53,13 @@ class Build(object):
             'vdt.recipe.version', 'target-extension')
         target_directory = config.get(
             'vdt.recipe.version', 'target-directory')
+
+        supported_plaform = self.check_platform(target_extension)
+
+        if not supported_plaform:
+            logger.info(
+                "Cannot run version, your platform is not supported.")
+            return False
 
         # create target directory to place our .deb files
         self.create_target_directory(target_directory)
