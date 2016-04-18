@@ -1,9 +1,12 @@
 import ConfigParser
+
 from glob import glob
+
 import logging
 import os
 import platform
 import subprocess
+import sys
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -72,8 +75,14 @@ class Build(object):
                 version_executable,
                 "--plugin=%s" % version_plugin,
                 "--versions-file=%s" % versions_file]
+
             if version_extra_args:
                 build_cmd.append(version_extra_args)
+
+            if len(sys.argv) > 1:
+                # add optional command line arguments to version
+                build_cmd += sys.argv[1:]
+
             logger.info(
                 "Executing command %s from %s" % (
                     " ".join(build_cmd), cwd))
