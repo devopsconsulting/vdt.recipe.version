@@ -64,7 +64,7 @@ class Build(object):
                 "Cannot run version, your platform is not supported.")
             return False
 
-        # create target directory to place our .deb files
+        # create target directory for the build packages
         self.create_target_directory(target_directory)
 
         for src in self.get_build_sources(sources_directory, sources_to_build):
