@@ -26,7 +26,7 @@ Requires `vdt.versionplugin.buildout`.
 
 After running the buildout you can generate .deb packages like this:
 
-    bin/vdt-build (-B <build_number>)
+    bin/vdt-build (<version options>)
 
 
 Example buildout for building wheels
@@ -53,6 +53,4 @@ Requires `vdt.versionplugin.wheel`:
 
 After running the buildout you can generate wheels like this:
 
-    bin/vdt-build  (-B <build_number>)
-
-
+    bin/vdt-build (<version options>)
