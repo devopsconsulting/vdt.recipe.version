@@ -25,7 +25,7 @@ Requires `vdt.versionplugin.buildout`.
 
 After running the buildout you can generate .deb packages like this:
 
-    bin/vdt-build
+    bin/vdt-build (-B <build_number>)
 
 
 Example buildout for building wheels
@@ -39,16 +39,17 @@ Requires `vdt.versionplugin.wheel`:
     
     [build-wheels]
     recipe = vdt.recipe.version
-    version-plugin = buildout
+    version-plugin = wheel
     version-extra-args = --skip-tag --build-dependencies
     sources-to-build =
         my.package
         another.package
     target-extension = *.whl
     build-directory = dist/
-    target-directory = ${buildout:directory}/debian-packages
+    target-directory = ${buildout:directory}/wheels
 
 After running the buildout you can generate wheels like this:
 
-    bin/vdt-build
+    bin/vdt-build  (-B <build_number>)
+
 

@@ -42,12 +42,17 @@ class Build(object):
 
     def __call__(self, *args, **kwargs):
         config = self.get_config()
+
+        versions_file = None
+
         version_executable = config.get(
             'vdt.recipe.version', 'version-executable')
         version_plugin = config.get('vdt.recipe.version', 'version-plugin')
         version_extra_args = config.get(
             'vdt.recipe.version', 'version-extra-args')
-        versions_file = config.get('vdt.recipe.version', 'versions-file')
+        if config.has_option('vdt.recipe.version', 'versions-file'):
+            versions_file = config.get(
+                'vdt.recipe.version', 'versions-file')
         sources_directory = config.get(
             'vdt.recipe.version', 'sources-directory')
         sources_to_build = config.get(
@@ -77,7 +82,7 @@ class Build(object):
                 version_executable,
                 "--plugin=%s" % version_plugin]
 
-            if versions_file:
+            if versions_file is not None:
                 build_cmd.append("--versions-file=%s" % versions_file)
 
             if version_extra_args:

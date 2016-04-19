@@ -23,9 +23,10 @@ class CreateConfig:
         config.set(
             'vdt.recipe.version',
             'version-extra-args', self.options.get('version-extra-args'))
-        config.set(
-            'vdt.recipe.version',
-            'versions-file', self.options.get('versions-file'))
+        if self.options.get('versions-file'):
+            config.set(
+                'vdt.recipe.version',
+                'versions-file', self.options.get('versions-file'))
         config.set(
             'vdt.recipe.version',
             'sources-directory', "%s/src" % self.buildout_dir)
