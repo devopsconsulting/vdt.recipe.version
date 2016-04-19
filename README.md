@@ -40,8 +40,7 @@ Requires `vdt.versionplugin.wheel`:
     [build-wheels]
     recipe = vdt.recipe.version
     version-plugin = buildout
-    version-extra-args = --skip-tag
-    versions-file = ${buildout:directory}/profiles/versions.cfg
+    version-extra-args = --skip-tag --build-dependencies
     sources-to-build =
         my.package
         another.package
