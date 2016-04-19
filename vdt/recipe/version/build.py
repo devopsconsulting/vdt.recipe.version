@@ -43,22 +43,23 @@ class Build(object):
     def __call__(self, *args, **kwargs):
         config = self.get_config()
 
-        versions_file = None
+        build_directory = None
+        version_extra_args = None
 
         version_executable = config.get(
             'vdt.recipe.version', 'version-executable')
         version_plugin = config.get('vdt.recipe.version', 'version-plugin')
-        version_extra_args = config.get(
-            'vdt.recipe.version', 'version-extra-args')
-        if config.has_option('vdt.recipe.version', 'versions-file'):
-            versions_file = config.get(
-                'vdt.recipe.version', 'versions-file')
+        if config.has_option('vdt.recipe.version', 'version-extra-args'):
+            version_extra_args = config.get(
+                'vdt.recipe.version', 'version-extra-args')
         sources_directory = config.get(
             'vdt.recipe.version', 'sources-directory')
         sources_to_build = config.get(
             'vdt.recipe.version', 'sources-to-build').split('\n')
-        build_directory = config.get(
-            'vdt.recipe.version', 'build-directory') or ""
+
+        if config.has_option('vdt.recipe.version', 'build-directory'):
+            build_directory = config.get(
+                'vdt.recipe.version', 'build-directory')
         target_extension = config.get(
             'vdt.recipe.version', 'target-extension')
         target_directory = config.get(
@@ -82,11 +83,8 @@ class Build(object):
                 version_executable,
                 "--plugin=%s" % version_plugin]
 
-            if versions_file is not None:
-                build_cmd.append("--versions-file=%s" % versions_file)
-
             if version_extra_args:
-                build_cmd.append(version_extra_args)
+                build_cmd += version_extra_args.split("\n")[1:]
 
             if len(sys.argv) > 1:
                 # add optional command line arguments to version

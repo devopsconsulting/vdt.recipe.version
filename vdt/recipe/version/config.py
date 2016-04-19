@@ -20,22 +20,21 @@ class CreateConfig:
         config.set(
             'vdt.recipe.version',
             'version-plugin', self.options.get('version-plugin'))
-        config.set(
-            'vdt.recipe.version',
-            'version-extra-args', self.options.get('version-extra-args'))
-        if self.options.get('versions-file'):
+        if self.options.get('version-extra-args', ''):
             config.set(
                 'vdt.recipe.version',
-                'versions-file', self.options.get('versions-file'))
+                'version-extra-args', "\n%s" % self.options.get(
+                    'version-extra-args'))
         config.set(
             'vdt.recipe.version',
             'sources-directory', "%s/src" % self.buildout_dir)
         config.set(
             'vdt.recipe.version',
             'sources-to-build', "\n%s" % self.options.get('sources-to-build'))
-        config.set(
-            'vdt.recipe.version',
-            'build-directory', self.options.get('build-directory'))
+        if self.options.get('build-directory', ''):
+            config.set(
+                'vdt.recipe.version',
+                'build-directory', self.options.get('build-directory'))
         config.set(
             'vdt.recipe.version',
             'target-extension', self.options.get('target-extension'))
