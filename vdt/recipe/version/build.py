@@ -52,6 +52,8 @@ class Build(object):
             'vdt.recipe.version', 'sources-directory')
         sources_to_build = config.get(
             'vdt.recipe.version', 'sources-to-build').split('\n')
+        build_directory = config.get(
+            'vdt.recipe.version', 'build-directory') or ""
         target_extension = config.get(
             'vdt.recipe.version', 'target-extension')
         target_directory = config.get(
@@ -89,6 +91,9 @@ class Build(object):
             logger.info(
                 subprocess.check_output(build_cmd, cwd=cwd))
 
+            # sometimes packages are build in a separate directory (fe wheels)
+            if build_directory:
+                cwd = "%s/%s" % (cwd, build_directory)
             # move created files to target directory
             package_files = glob("%s/%s" % (cwd, target_extension))
             if package_files:

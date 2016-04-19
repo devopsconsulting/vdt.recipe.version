@@ -34,6 +34,9 @@ class CreateConfig:
             'sources-to-build', "\n%s" % self.options.get('sources-to-build'))
         config.set(
             'vdt.recipe.version',
+            'build-directory', self.options.get('build-directory'))
+        config.set(
+            'vdt.recipe.version',
             'target-extension', self.options.get('target-extension'))
         config.set(
             'vdt.recipe.version',
