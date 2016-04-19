@@ -75,8 +75,10 @@ class Build(object):
             logger.info("Running 'version' for %s" % src)
             build_cmd = [
                 version_executable,
-                "--plugin=%s" % version_plugin,
-                "--versions-file=%s" % versions_file]
+                "--plugin=%s" % version_plugin]
+
+            if versions_file:
+                build_cmd.append("--versions-file=%s" % versions_file)
 
             if version_extra_args:
                 build_cmd.append(version_extra_args)
