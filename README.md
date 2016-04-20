@@ -6,7 +6,7 @@ A buildout recipe to use vdt.version
 Example buildout for building .deb packages
 -------------------------------------------
 
-Requires `vdt.versionplugin.buildout`.
+Requires `vdt.versionplugin.buildout`:
 
     [buildout]
     parts =
@@ -17,7 +17,7 @@ Requires `vdt.versionplugin.buildout`.
     version-plugin = buildout
     version-extra-args = 
         --skip-tag
-        --versions-file = ${buildout:directory}/profiles/versions.cfg
+        --versions-file=${buildout:directory}/profiles/versions.cfg
     sources-to-build =
         my.package
         another.package
