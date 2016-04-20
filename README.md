@@ -6,12 +6,29 @@ A buildout recipe to use vdt.version
 Example buildout for building .deb packages
 -------------------------------------------
 
-Requires `vdt.versionplugin.buildout`:
-
     [buildout]
+    sources = sources
     parts =
+        vdt
         build-debian-packages
-    
+
+    extensions =
+        mr.developer
+
+    auto-checkout = *
+
+    [sources]
+    vdt.recipe.version = git git@github.com:devopsconsulting/vdt.recipe.version.git
+    vdt.versionplugine.buildout = git git@github.com:Avira/vdt.versionplugin.buildout.git
+
+    [vdt]
+    recipe = zc.recipe.egg:scripts
+    eggs = 
+        vdt.version
+        vdt.versionplugin.buildout
+        vdt.recipe.version
+    dependent-scripts = true
+
     [build-debian-packages]
     recipe = vdt.recipe.version
     version-plugin = buildout
@@ -19,8 +36,7 @@ Requires `vdt.versionplugin.buildout`:
         --skip-tag
         --versions-file=${buildout:directory}/profiles/versions.cfg
     sources-to-build =
-        my.package
-        another.package
+        vdt.recipe.version
     target-extension = *.deb
     target-directory = ${buildout:directory}/debian-packages
 
@@ -32,12 +48,29 @@ After running the buildout you can generate .deb packages like this:
 Example buildout for building wheels
 ------------------------------------
 
-Requires `vdt.versionplugin.wheel`:
-
     [buildout]
+    sources = sources
     parts =
+        vdt
         build-wheels
-    
+
+    extensions =
+        mr.developer
+
+    auto-checkout = *
+
+    [sources]
+    vdt.recipe.version = git git@github.com:devopsconsulting/vdt.recipe.version.git
+    vdt.versionplugine.buildout = git git@github.com:Avira/vdt.versionplugin.buildout.git
+
+    [vdt]
+    recipe = zc.recipe.egg:scripts
+    eggs = 
+        vdt.version
+        vdt.versionplugin.wheel
+        vdt.recipe.version
+    dependent-scripts = true
+
     [build-wheels]
     recipe = vdt.recipe.version
     version-plugin = wheel
@@ -45,11 +78,11 @@ Requires `vdt.versionplugin.wheel`:
         --skip-tag 
         --build-dependencies
     sources-to-build =
-        my.package
-        another.package
+        vdt.recipe.version
     target-extension = *.whl
     build-directory = dist/
     target-directory = ${buildout:directory}/wheels
+
 
 After running the buildout you can generate wheels like this:
 
