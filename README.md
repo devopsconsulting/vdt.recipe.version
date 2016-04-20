@@ -6,11 +6,21 @@ A buildout recipe to use vdt.version
 Example buildout for building .deb packages
 -------------------------------------------
 
+Let buildout extend a `versions.cf`g so `vdt.versionplugin.buildout` knows which versions to build:
+
+    [versions]
+    zc.buildout = 2.5.0
+
+Configure buildout like the following, including the `--versions-file` argument
+
     [buildout]
     sources = sources
     parts =
         vdt
         build-debian-packages
+
+    extends = 
+        versions.cfg
 
     extensions =
         mr.developer
@@ -34,7 +44,7 @@ Example buildout for building .deb packages
     version-plugin = buildout
     version-extra-args = 
         --skip-tag
-        --versions-file=${buildout:directory}/profiles/versions.cfg
+        --versions-file=${buildout:directory}/versions.cfg
     sources-to-build =
         vdt.recipe.version
     target-extension = *.deb
