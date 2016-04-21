@@ -1,4 +1,5 @@
 import ConfigParser
+import os
 
 
 class CreateConfig:
@@ -8,43 +9,67 @@ class CreateConfig:
         self.name = name
         self.options = options
 
-    def update(self):
-        config = ConfigParser.ConfigParser()
+    @property
+    def config_file(self):
+        return os.path.join(self.buildout_dir, ".vdt.recipe.version.cfg")
 
-        config.add_section('vdt.recipe.version')
+    def init_config(self):
+        # inits or cleans the config
+        if not os.path.exists(self.config_file):
+            # create file
+            cfgfile = open(self.config_file, "w")
+            cfgfile.close()
+        else:
+            with open(self.config_file, "r") as cfgfile:
+                config = ConfigParser.ConfigParser()
+                config.readfp(cfgfile)
+                for section in config.sections():
+                    if section not in self.buildout:
+                        config.remove_section(section)
+            with open(self.config_file, "w") as cfgfile:
+                config.write(cfgfile)
+
+    def update(self):
+        self.init_config()
+
+        config = ConfigParser.ConfigParser()
+        with open(self.config_file, "r") as cfgfile:
+            config.readfp(cfgfile)
+
+        if not config.has_section(self.name):
+            config.add_section(self.name)
 
         version_executable = self.options.get(
             'version-executable') or "%s/bin/version" % self.buildout_dir
         config.set(
-            'vdt.recipe.version', 'version-executable', version_executable)
+            self.name, 'version-executable', version_executable)
         config.set(
-            'vdt.recipe.version',
+            self.name,
             'version-plugin', self.options.get('version-plugin'))
         if self.options.get('version-extra-args', ''):
             config.set(
-                'vdt.recipe.version',
+                self.name,
                 'version-extra-args', "\n%s" % self.options.get(
                     'version-extra-args'))
         config.set(
-            'vdt.recipe.version',
+            self.name,
             'sources-directory', "%s/src" % self.buildout_dir)
         config.set(
-            'vdt.recipe.version',
+            self.name,
             'sources-to-build', "\n%s" % self.options.get('sources-to-build'))
         if self.options.get('build-directory', ''):
             config.set(
-                'vdt.recipe.version',
+                self.name,
                 'build-directory', self.options.get('build-directory'))
         config.set(
-            'vdt.recipe.version',
+            self.name,
             'target-extension', self.options.get('target-extension'))
         config.set(
-            'vdt.recipe.version',
+            self.name,
             'target-directory', self.options.get('target-directory'))
 
-        cfgfile = open("%s/.vdt.recipe.version.cfg" % self.buildout_dir, 'w')
-        config.write(cfgfile)
-        cfgfile.close()
+        with open(self.config_file, "w") as cfgfile:
+            config.write(cfgfile)
         return ""
 
     def install(self):

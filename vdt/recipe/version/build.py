@@ -40,30 +40,21 @@ class Build(object):
             if src in sources_to_build or '*' in sources_to_build:
                 yield src
 
-    def __call__(self, *args, **kwargs):
-        config = self.get_config()
-
+    def build(self, config, section):
         build_directory = None
         version_extra_args = None
 
-        version_executable = config.get(
-            'vdt.recipe.version', 'version-executable')
-        version_plugin = config.get('vdt.recipe.version', 'version-plugin')
-        if config.has_option('vdt.recipe.version', 'version-extra-args'):
-            version_extra_args = config.get(
-                'vdt.recipe.version', 'version-extra-args')
-        sources_directory = config.get(
-            'vdt.recipe.version', 'sources-directory')
-        sources_to_build = config.get(
-            'vdt.recipe.version', 'sources-to-build').split('\n')
+        version_executable = config.get(section, 'version-executable')
+        version_plugin = config.get(section, 'version-plugin')
+        if config.has_option(section, 'version-extra-args'):
+            version_extra_args = config.get(section, 'version-extra-args')
+        sources_directory = config.get(section, 'sources-directory')
+        sources_to_build = config.get(section, 'sources-to-build').split('\n')
 
-        if config.has_option('vdt.recipe.version', 'build-directory'):
-            build_directory = config.get(
-                'vdt.recipe.version', 'build-directory')
-        target_extension = config.get(
-            'vdt.recipe.version', 'target-extension')
-        target_directory = config.get(
-            'vdt.recipe.version', 'target-directory')
+        if config.has_option(section, 'build-directory'):
+            build_directory = config.get(section, 'build-directory')
+        target_extension = config.get(section, 'target-extension')
+        target_directory = config.get(section, 'target-directory')
 
         supported_plaform = self.check_platform(target_extension)
 
@@ -107,5 +98,11 @@ class Build(object):
                 logger.info("Executing command %s" % move_cmd)
                 logger.info(
                     subprocess.check_output(move_cmd, cwd=cwd))
+
+    def __call__(self, *args, **kwargs):
+        config = self.get_config()
+        for section in config.sections():
+            logger.info("Building section %s" % section)
+            self.build(config, section)
 
 build = Build()
