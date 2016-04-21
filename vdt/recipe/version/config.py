@@ -36,8 +36,9 @@ class CreateConfig:
         with open(self.config_file, "r") as cfgfile:
             config.readfp(cfgfile)
 
-        if not config.has_section(self.name):
-            config.add_section(self.name)
+        if config.has_section(self.name):
+            config.remove_section(self.name)
+        config.add_section(self.name)
 
         fpm_editor_executable = self.options.get(
             'fpm-editor-executable') or os.path.join(
