@@ -53,11 +53,11 @@ class CreateConfig:
         config.set(
             self.name,
             'version-plugin', self.options.get('version-plugin'))
-        if self.options.get('version-extra-args', ''):
+        version_extra_args =  self.options.get('version-extra-args', '')
+        if version_extra_args: 
             config.set(
-                self.name,
-                'version-extra-args', "\n%s" % self.options.get(
-                    'version-extra-args'))
+                self.name, 'version-extra-args',
+                "\n%s" % version_extra_args.replace(" ", "\n")) 
         config.set(
             self.name,
             'sources-directory', "%s/src" % self.buildout_dir)

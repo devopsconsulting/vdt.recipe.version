@@ -91,9 +91,9 @@ class Build(object):
 
             # sometimes packages are build in a separate directory (fe wheels)
             if build_directory:
-                cwd = "%s/%s" % (cwd, build_directory)
+                cwd = os.path.join(cwd, build_directory)
             # move created files to target directory
-            package_files = glob("%s/%s" % (cwd, target_extension))
+            package_files = glob(os.path.join(cwd, target_extension))
             if package_files:
                 move_cmd = ["mv"] + package_files + [target_directory]
 
