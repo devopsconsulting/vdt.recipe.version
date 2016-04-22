@@ -54,7 +54,7 @@ class CreateConfig:
         if version_extra_args:
             config.set(
                 self.name, 'version-extra-args',
-                "\n%s" % version_extra_args)
+                "\n%s" % version_extra_args.replace(" ", "\n"))
 
         post_command = self.options.get('post-command', '')
         if post_command:
