@@ -7,7 +7,6 @@ import logging
 import os
 import platform
 import subprocess
-import sys
 
 from vdt.version.main import parse_args, run
 
@@ -39,7 +38,7 @@ class Build(object):
             if src in sources_to_build or '*' in sources_to_build:
                 yield src
 
-    def build(self, config, section):
+    def build(self, config, section, cmd_extra_args):
         build_directory = None
         version_extra_args = None
         post_command = None
@@ -87,9 +86,9 @@ class Build(object):
                     # separate, like ["ls", "-l" "-a"]
                     vdt_args += row.split(" ")
 
-            if len(sys.argv) > 1:
+            if cmd_extra_args:
                 # add optional command line arguments to version
-                vdt_args += sys.argv[1:]
+                vdt_args += cmd_extra_args
 
             args, extra_args = parse_args(vdt_args)
             logging.info(
@@ -141,6 +140,6 @@ class Build(object):
 
         for section in sections:
             logging.info("Building section %s" % section)
-            self.build(config, section)
+            self.build(config, section, extra_args)
 
 build = Build()
