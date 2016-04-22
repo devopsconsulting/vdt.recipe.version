@@ -44,6 +44,7 @@ class Build(object):
         post_command = None
 
         version_plugin = config.get(section, 'version-plugin')
+        bin_directory = config.get(section, 'bin-directory')
 
         if config.has_option(section, 'version-extra-args'):
             version_extra_args = config.get(section, 'version-extra-args')
@@ -69,6 +70,9 @@ class Build(object):
 
         # create target directory for the builded packages
         self.create_target_directory(target_directory)
+
+        # add the buildout bin directory to the path
+        os.environ['PATH'] = bin_directory + os.environ['PATH']
 
         # now build each package
         for src in self.get_build_sources(sources_directory, sources_to_build):

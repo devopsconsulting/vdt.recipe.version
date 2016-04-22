@@ -44,6 +44,10 @@ class CreateConfig:
             self.name,
             'version-plugin', self.options.get('version-plugin'))
 
+        config.set(
+            self.name,
+            'bin-directory', "%s/bin" % self.buildout_dir)
+
         version_extra_args = self.options.get('version-extra-args', '')
         if version_extra_args:
             config.set(
