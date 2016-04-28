@@ -45,6 +45,7 @@ class Build(object):
         version_extra_args = None
 
         version_executable = config.get(section, 'version-executable')
+        fpm_editor_executable = config.get(section, 'fpm-editor-executable')
         version_plugin = config.get(section, 'version-plugin')
         if config.has_option(section, 'version-extra-args'):
             version_extra_args = config.get(section, 'version-extra-args')
@@ -72,6 +73,7 @@ class Build(object):
             logger.info("Running 'version' for %s" % src)
             build_cmd = [
                 version_executable,
+                "--vdt-fpmeditor-path=%s" % fpm_editor_executable,
                 "--plugin=%s" % version_plugin]
 
             if version_extra_args:

@@ -40,9 +40,16 @@ class CreateConfig:
             config.add_section(self.name)
 
         version_executable = self.options.get(
-            'version-executable') or "%s/bin/version" % self.buildout_dir
+            'version-executable') or os.path.join(
+                self.buildout_dir, "bin", "version")
+        fpm_editor_executable = self.options.get(
+            'fpm-editor-executable') or os.path.join(
+                self.buildout_dir, "bin", "vdt.fpmeditor")
         config.set(
             self.name, 'version-executable', version_executable)
+        config.set(
+            self.name, 'fpm-editor-executable', fpm_editor_executable)
+
         config.set(
             self.name,
             'version-plugin', self.options.get('version-plugin'))
