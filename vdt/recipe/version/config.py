@@ -39,35 +39,34 @@ class CreateConfig:
         if not config.has_section(self.name):
             config.add_section(self.name)
 
-        version_executable = self.options.get(
-            'version-executable') or os.path.join(
-                self.buildout_dir, "bin", "version")
         fpm_editor_executable = self.options.get(
             'fpm-editor-executable') or os.path.join(
                 self.buildout_dir, "bin", "vdt.fpmeditor")
-        config.set(
-            self.name, 'version-executable', version_executable)
         config.set(
             self.name, 'fpm-editor-executable', fpm_editor_executable)
 
         config.set(
             self.name,
             'version-plugin', self.options.get('version-plugin'))
-        version_extra_args =  self.options.get('version-extra-args', '')
-        if version_extra_args: 
+
+        version_extra_args = self.options.get('version-extra-args', '')
+        if version_extra_args:
             config.set(
                 self.name, 'version-extra-args',
-                "\n%s" % version_extra_args.replace(" ", "\n")) 
+                "\n%s" % version_extra_args)
+
         config.set(
             self.name,
             'sources-directory', "%s/src" % self.buildout_dir)
         config.set(
             self.name,
             'sources-to-build', "\n%s" % self.options.get('sources-to-build'))
+
         if self.options.get('build-directory', ''):
             config.set(
                 self.name,
                 'build-directory', self.options.get('build-directory'))
+
         config.set(
             self.name,
             'target-extension', self.options.get('target-extension'))
