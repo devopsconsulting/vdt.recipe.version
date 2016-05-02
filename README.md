@@ -27,7 +27,7 @@ Configure buildout like the following, including the `--versions-file` argument.
 
     [sources]
     vdt.recipe.version = git git@github.com:devopsconsulting/vdt.recipe.version.git
-    vdt.versionplugine.buildout = git git@github.com:specialunderwear/vdt.versionplugin.buildout.git branch=bug/nijntje
+    vdt.versionplugin.buildout = git git@github.com:specialunderwear/vdt.versionplugin.buildout.git branch=bug/nijntje
 
     [vdt]
     recipe = zc.recipe.egg:scripts
