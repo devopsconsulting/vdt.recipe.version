@@ -11,8 +11,6 @@ import sys
 
 from vdt.version.main import parse_args, run
 
-logger = logging.getLogger(__name__)
-
 
 class Build(object):
 
@@ -44,12 +42,16 @@ class Build(object):
     def build(self, config, section):
         build_directory = None
         version_extra_args = None
+        post_command = None
 
         fpm_editor_executable = config.get(section, 'fpm-editor-executable')
         version_plugin = config.get(section, 'version-plugin')
 
         if config.has_option(section, 'version-extra-args'):
             version_extra_args = config.get(section, 'version-extra-args')
+
+        if config.has_option(section, 'post-command'):
+            post_command = config.get(section, 'post-command')
 
         sources_directory = config.get(section, 'sources-directory')
         sources_to_build = config.get(section, 'sources-to-build').split('\n')
@@ -63,7 +65,7 @@ class Build(object):
         supported_plaform = self.check_platform(target_extension)
 
         if not supported_plaform:
-            logger.debug(
+            logging.info(
                 "Cannot run version, your platform is not supported.")
             return False
 
@@ -74,7 +76,7 @@ class Build(object):
         for src in self.get_build_sources(sources_directory, sources_to_build):
             cwd = os.path.join(sources_directory, src)
 
-            logger.debug("Running 'vdt.version' for %s" % src)
+            logging.info("Running 'vdt.version' for %s" % src)
 
             # collect all the arguments
             vdt_args = [
@@ -89,7 +91,7 @@ class Build(object):
                 vdt_args += sys.argv[1:]
 
             args, extra_args = parse_args(vdt_args)
-            logger.debug(
+            logging.info(
                 "calling run with arguments %s from %s" % (
                     " ".join(vdt_args), cwd))
 
@@ -106,9 +108,14 @@ class Build(object):
                 if package_files:
                     move_cmd = ["mv"] + package_files + [target_directory]
 
-                    logger.debug("Executing command %s" % move_cmd)
-                    logger.debug(
+                    logging.info("Executing command %s" % move_cmd)
+                    logging.info(
                         subprocess.check_output(move_cmd, cwd=cwd))
+
+                if post_command:
+                    logging.info("Executing command %s" % post_command)
+                    logging.info(subprocess.check_output(
+                        post_command.split(" "), cwd=cwd))
 
     def __call__(self, *args, **kwargs):
         p = argparse.ArgumentParser(
@@ -117,13 +124,14 @@ class Build(object):
             "-v", "--verbose", default=False,
             dest="verbose", action="store_true", help="more output")
         args, extra_args = p.parse_known_args()
+
         loglevel = logging.DEBUG if args.verbose else logging.INFO
         logging.basicConfig(level=loglevel)
 
         config = self.get_config()
 
         for section in config.sections():
-            logger.debug("Building section %s" % section)
+            logging.info("Building section %s" % section)
             self.build(config, section)
 
 build = Build()
