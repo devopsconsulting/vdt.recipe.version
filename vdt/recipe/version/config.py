@@ -55,6 +55,12 @@ class CreateConfig:
                 self.name, 'version-extra-args',
                 "\n%s" % version_extra_args)
 
+        post_command = self.options.get('post-command', '')
+        if post_command:
+            config.set(
+                self.name, 'post-command',
+                "%s" % post_command.strip("\n"))
+
         config.set(
             self.name,
             'sources-directory', "%s/src" % self.buildout_dir)
