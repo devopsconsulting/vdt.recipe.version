@@ -98,7 +98,7 @@ class Build(object):
             os.chdir(cwd)
             exit_code = run(args, extra_args)
 
-            if exit_code == 0:
+            if exit_code != 1:
                 # sometimes packages are build in a separate directory
                 # (fe wheels)
                 if build_directory:
