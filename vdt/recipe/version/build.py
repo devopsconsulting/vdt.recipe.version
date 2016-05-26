@@ -118,7 +118,7 @@ class Build(object):
                 if post_command:
                     logging.info("Executing command %s" % post_command)
                     logging.info(subprocess.check_output(
-                        post_command.split(" "), cwd=cwd))
+                        post_command, cwd=cwd, shell=True))
 
     def __call__(self, *args, **kwargs):
         p = argparse.ArgumentParser(
