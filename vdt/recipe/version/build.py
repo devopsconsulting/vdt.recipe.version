@@ -44,7 +44,6 @@ class Build(object):
         version_extra_args = None
         post_command = None
 
-        fpm_editor_executable = config.get(section, 'fpm-editor-executable')
         version_plugin = config.get(section, 'version-plugin')
 
         if config.has_option(section, 'version-extra-args'):
@@ -126,14 +125,22 @@ class Build(object):
         p.add_argument(
             "-v", "--verbose", default=False,
             dest="verbose", action="store_true", help="more output")
+        p.add_argument(
+            "--section", dest="section", action="store",
+            help="Only build a specific section")
+
         args, extra_args = p.parse_known_args()
 
         loglevel = logging.DEBUG if args.verbose else logging.INFO
         logging.basicConfig(level=loglevel)
 
         config = self.get_config()
+        sections = config.sections()
 
-        for section in config.sections():
+        if args.section:
+            sections = [args.section]
+
+        for section in sections:
             logging.info("Building section %s" % section)
             self.build(config, section)
 
