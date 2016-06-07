@@ -82,7 +82,10 @@ class Build(object):
                 "--plugin=%s" % version_plugin]
 
             if version_extra_args:
-                vdt_args += version_extra_args.split("\n")[1:].split(" ")
+                for row in version_extra_args.split("\n")[1:]:
+                    # subprocess.checkoutput wants each argument to be
+                    # separate, like ["ls", "-l" "-a"]
+                    vdt_args += row.split(" ")
 
             if len(sys.argv) > 1:
                 # add optional command line arguments to version
