@@ -72,7 +72,7 @@ class Build(object):
         self.create_target_directory(target_directory)
 
         # add the buildout bin directory to the path
-        os.environ['PATH'] = bin_directory + os.environ['PATH']
+        os.environ['PATH'] = "%s:" % bin_directory + os.environ['PATH']
 
         # now build each package
         for src in self.get_build_sources(sources_directory, sources_to_build):
