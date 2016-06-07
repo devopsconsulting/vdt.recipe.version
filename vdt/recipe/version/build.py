@@ -81,12 +81,8 @@ class Build(object):
             vdt_args = [
                 "--plugin=%s" % version_plugin]
 
-            if fpm_editor_executable != '0':
-                # we can set the fpm_editor_path to 0 to disable it
-                vdt_args += ["--vdt-fpmeditor-path=%s" % fpm_editor_executable]
-
             if version_extra_args:
-                vdt_args += version_extra_args.split("\n")[1:]
+                vdt_args += version_extra_args.split("\n")[1:].split(" ")
 
             if len(sys.argv) > 1:
                 # add optional command line arguments to version
