@@ -40,21 +40,18 @@ class CreateConfig:
             config.remove_section(self.name)
         config.add_section(self.name)
 
-        fpm_editor_executable = self.options.get(
-            'fpm-editor-executable') or os.path.join(
-                self.buildout_dir, "bin", "vdt.fpmeditor")
-        config.set(
-            self.name, 'fpm-editor-executable', fpm_editor_executable)
-
         config.set(
             self.name,
             'version-plugin', self.options.get('version-plugin'))
 
+        config.set(
+            self.name,
+            'bin-directory', "%s/bin" % self.buildout_dir)
+
         version_extra_args = self.options.get('version-extra-args', '')
         if version_extra_args:
             config.set(
-                self.name, 'version-extra-args',
-                "\n%s" % version_extra_args.replace(" ", "\n"))
+                self.name, 'version-extra-args', "\n%s" % version_extra_args)
 
         post_command = self.options.get('post-command', '')
         if post_command:

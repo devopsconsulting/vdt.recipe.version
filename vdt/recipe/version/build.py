@@ -7,7 +7,6 @@ import logging
 import os
 import platform
 import subprocess
-import sys
 
 from vdt.version.main import parse_args, run
 
@@ -39,12 +38,13 @@ class Build(object):
             if src in sources_to_build or '*' in sources_to_build:
                 yield src
 
-    def build(self, config, section):
+    def build(self, config, section, cmd_extra_args):
         build_directory = None
         version_extra_args = None
         post_command = None
 
         version_plugin = config.get(section, 'version-plugin')
+        bin_directory = config.get(section, 'bin-directory')
 
         if config.has_option(section, 'version-extra-args'):
             version_extra_args = config.get(section, 'version-extra-args')
@@ -71,6 +71,9 @@ class Build(object):
         # create target directory for the builded packages
         self.create_target_directory(target_directory)
 
+        # add the buildout bin directory to the path
+        os.environ['PATH'] = bin_directory + os.environ['PATH']
+
         # now build each package
         for src in self.get_build_sources(sources_directory, sources_to_build):
             cwd = os.path.join(sources_directory, src)
@@ -81,16 +84,15 @@ class Build(object):
             vdt_args = [
                 "--plugin=%s" % version_plugin]
 
-            if fpm_editor_executable != '0':
-                # we can set the fpm_editor_path to 0 to disable it
-                vdt_args += ["--vdt-fpmeditor-path=%s" % fpm_editor_executable]
-
             if version_extra_args:
-                vdt_args += version_extra_args.split("\n")[1:]
+                for row in version_extra_args.split("\n")[1:]:
+                    # subprocess.checkoutput wants each argument to be
+                    # separate, like ["ls", "-l" "-a"]
+                    vdt_args += row.split(" ")
 
-            if len(sys.argv) > 1:
+            if cmd_extra_args:
                 # add optional command line arguments to version
-                vdt_args += sys.argv[1:]
+                vdt_args += cmd_extra_args
 
             args, extra_args = parse_args(vdt_args)
             logging.info(
@@ -142,6 +144,6 @@ class Build(object):
 
         for section in sections:
             logging.info("Building section %s" % section)
-            self.build(config, section)
+            self.build(config, section, extra_args)
 
 build = Build()
