@@ -1,6 +1,6 @@
 vdt.recipe.version
 ==================
-A buildout recipe to use `vdt.version`. You will need fpm to build debian packages (https://github.com/jordansissel/fpm). You can have multiple sections so you can build different packages with their own dependencies. Make sure you will run the `bin/vdt-build` command with `fakeroot` when building debian packages.
+A buildout recipe to use `vdt.version`. It builds packages of the versions you have pinned in  `versions.cfg`. You will need `fpm` to build debian packages (https://github.com/jordansissel/fpm). You can have multiple sections so you can build different packages with their own dependencies. Make sure you will run the `bin/vdt-build` command with `fakeroot` when building debian packages. 
 
 
 Example buildout for building .deb and .whl packages
@@ -51,10 +51,11 @@ Configure buildout like the following, including the `--versions-file` argument.
 
     [build-wheels]
     recipe = vdt.recipe.version
-    version-plugin = wheel
+    version-plugin = buildout
     version-extra-args = 
-        --skip-tag 
-        --build-dependencies
+        --skip-tag
+        --versions-file=${buildout:directory}/versions.cfg
+        --target=wheel
     sources-to-build =
         vdt.recipe.version
     target-extension = *.whl
