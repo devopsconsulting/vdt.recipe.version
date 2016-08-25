@@ -6,80 +6,75 @@ class CreateConfig:
     def __init__(self, buildout, name, options):
         self.buildout = buildout
         self.buildout_dir = buildout['buildout']['directory']
+
         self.name = name
         self.options = options
 
-    @property
-    def config_file(self):
-        return os.path.join(self.buildout_dir, ".vdt.recipe.version.cfg")
+        self.configfile = os.path.join(
+            self.buildout_dir, ".vdt.recipe.version.cfg")
 
-    def init_config(self):
-        # inits or cleans the config
-        if not os.path.exists(self.config_file):
-            # create file
-            cfgfile = open(self.config_file, "w")
-            cfgfile.close()
-        else:
-            with open(self.config_file, "r") as cfgfile:
-                config = ConfigParser.ConfigParser()
-                config.readfp(cfgfile)
-                for section in config.sections():
-                    if section not in self.buildout:
-                        config.remove_section(section)
-            with open(self.config_file, "w") as cfgfile:
-                config.write(cfgfile)
+    def save(self):
+        self.config.write(open(self.configfile, "w"))
+
+    def init(self):
+        self.config = ConfigParser.ConfigParser()
+        self.config.read(self.configfile)
+
+        for section in self.config.sections():
+            if section not in self.buildout:
+                self.config.remove_section(section)
+
+        self.save()
 
     def update(self):
-        self.init_config()
+        self.init()
 
-        config = ConfigParser.ConfigParser()
-        with open(self.config_file, "r") as cfgfile:
-            config.readfp(cfgfile)
+        self.config.read(self.configfile)
 
-        if config.has_section(self.name):
-            config.remove_section(self.name)
-        config.add_section(self.name)
+        if self.config.has_section(self.name):
+            self.config.remove_section(self.name)
+        self.config.add_section(self.name)
 
-        config.set(
+        self.config.set(
             self.name,
             'version-plugin', self.options.get('version-plugin'))
 
-        config.set(
+        self.config.set(
             self.name,
             'bin-directory', "%s/bin" % self.buildout_dir)
 
         version_extra_args = self.options.get('version-extra-args', '')
         if version_extra_args:
-            config.set(
+            self.config.set(
                 self.name, 'version-extra-args', "\n%s" % version_extra_args)
 
         post_command = self.options.get('post-command', '')
         if post_command:
-            config.set(
+            self.config.set(
                 self.name, 'post-command',
                 "%s" % post_command.strip("\n"))
 
-        config.set(
+        self.config.set(
             self.name,
             'sources-directory', "%s/src" % self.buildout_dir)
-        config.set(
+        self.config.set(
             self.name,
             'sources-to-build', "\n%s" % self.options.get('sources-to-build'))
 
         if self.options.get('build-directory', ''):
-            config.set(
+            self.config.set(
                 self.name,
                 'build-directory', self.options.get('build-directory'))
 
-        config.set(
+        self.config.set(
             self.name,
             'target-extension', self.options.get('target-extension'))
-        config.set(
+        self.config.set(
             self.name,
             'target-directory', self.options.get('target-directory'))
 
-        with open(self.config_file, "w") as cfgfile:
-            config.write(cfgfile)
+        self.save()
+
         return ""
 
     def install(self):
