@@ -5,20 +5,12 @@ from glob import glob
 
 import logging
 import os
-import platform
 import subprocess
 
 from vdt.version.main import parse_args, run
 
 
 class Build(object):
-
-    @staticmethod
-    def check_platform(target_extension):
-        if target_extension == "*.deb":
-            current_platform = platform.dist()[0].lower()
-            return current_platform in ["ubuntu", "debian"]
-        return True
 
     @staticmethod
     def create_target_directory(directory):
@@ -61,13 +53,6 @@ class Build(object):
         target_extension = config.get(section, 'target-extension')
         target_directory = config.get(section, 'target-directory')
 
-        supported_plaform = self.check_platform(target_extension)
-
-        if not supported_plaform:
-            logging.info(
-                "Cannot run version, your platform is not supported.")
-            return False
-
         # create target directory for the builded packages
         self.create_target_directory(target_directory)
 
@@ -94,6 +79,7 @@ class Build(object):
                 # add optional command line arguments to version
                 vdt_args += cmd_extra_args
 
+            # add target_directory to extra_args
             args, extra_args = parse_args(vdt_args)
             logging.info(
                 "calling run with arguments %s from %s" % (
