@@ -103,6 +103,8 @@ class Build(object):
                         subprocess.check_output(move_cmd, cwd=cwd))
 
                 if post_command:
+                    # execute post command in sources directory
+                    cwd = os.path.join(sources_directory, src)
                     logging.info("Executing command %s" % post_command)
                     logging.info(subprocess.check_output(
                         post_command, cwd=cwd, shell=True))
