@@ -15,7 +15,7 @@ class Build(object):
     @staticmethod
     def create_target_directory(directory):
         if not os.path.isdir(directory):
-            os.mkdir(directory)
+            os.makedirs(directory)
 
     @staticmethod
     def get_config():
