@@ -1,4 +1,7 @@
-import configparser
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser
 import os
 
 
