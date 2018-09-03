@@ -56,7 +56,7 @@ class CreateConfig:
 
         self.config.set(
             self.name,
-            'sources-directory', "%s/src" % self.buildout_dir)
+            'sources-directory', self.options.get('sources-directory', "%s/src" % self.buildout_dir))
         self.config.set(
             self.name,
             'sources-to-build', "\n%s" % self.options.get('sources-to-build'))

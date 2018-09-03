@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-__version__ = "0.1.1"
+__version__ = "0.1.4"
 
 description = "A buildout recipe to use vdt.version"
 
@@ -32,6 +32,7 @@ setup(
     install_requires=[
         'setuptools',
         'zc.buildout',
+        'vdt.version',
     ],
     # mark test target to require extras.
     extras_require={
