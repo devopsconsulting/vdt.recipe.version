@@ -1,4 +1,4 @@
-import ConfigParser
+import configparser
 import os
 
 
@@ -17,7 +17,7 @@ class CreateConfig:
         self.config.write(open(self.configfile, "w"))
 
     def init(self):
-        self.config = ConfigParser.ConfigParser()
+        self.config = configparser.ConfigParser()
         self.config.read(self.configfile)
 
         for section in self.config.sections():
