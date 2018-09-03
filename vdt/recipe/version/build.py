@@ -1,5 +1,8 @@
 import argparse
-import configparser
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser
 
 from glob import glob
 
