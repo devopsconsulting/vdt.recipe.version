@@ -1,5 +1,5 @@
 import argparse
-import ConfigParser
+import configparser
 
 from glob import glob
 
@@ -20,7 +20,7 @@ class Build(object):
     @staticmethod
     def get_config():
         path = os.getcwd()
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.readfp(open('%s/.vdt.recipe.version.cfg' % path))
         return config
 
