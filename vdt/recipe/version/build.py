@@ -24,7 +24,8 @@ class Build(object):
     def get_config():
         path = os.getcwd()
         config = configparser.ConfigParser()
-        config.readfp(open('%s/.vdt.recipe.version.cfg' % path))
+        with open('%s/.vdt.recipe.version.cfg' % path) as fp:
+            config.read_file(fp)
         return config
 
     @staticmethod
